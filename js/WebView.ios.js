@@ -52,7 +52,6 @@ function processDecelerationRate(decelerationRate) {
   return decelerationRate;
 }
 
-const RNCUIWebViewManager = NativeModules.RNCUIWebViewManager;
 const RNCWKWebViewManager = NativeModules.RNCWKWebViewManager;
 
 const BGWASH = 'rgba(255,255,255,0.8)';
@@ -182,11 +181,7 @@ class WebView extends React.Component<WebViewSharedProps, State> {
 
     let scalesPageToFit;
 
-    if (this.props.useWebKit) {
-      ({ scalesPageToFit } = this.props);
-    } else {
-      ({ scalesPageToFit = true } = this.props);
-    }
+    ({ scalesPageToFit } = this.props)
 
     if (this.state.viewState === WebViewState.LOADING) {
       otherView = (this.props.renderLoading || defaultRenderLoading)();
@@ -236,11 +231,7 @@ class WebView extends React.Component<WebViewSharedProps, State> {
 
     let NativeWebView = nativeConfig.component;
 
-    if (this.props.useWebKit) {
-      NativeWebView = NativeWebView || RNCWKWebView;
-    } else {
-      NativeWebView = NativeWebView || RNCUIWebView;
-    }
+    NativeWebView = NativeWebView || RNCWKWebView;
 
     const webView = (
       <NativeWebView
@@ -292,10 +283,6 @@ class WebView extends React.Component<WebViewSharedProps, State> {
   }
 
   _getCommands() {
-    if (!this.props.useWebKit) {
-      return UIManager.RNCUIWebView.Commands;
-    }
-
     return UIManager.RNCWKWebView.Commands;
   }
 
@@ -438,12 +425,7 @@ class WebView extends React.Component<WebViewSharedProps, State> {
     lockIdentifier: number,
   ) => {
     let viewManager = (this.props.nativeConfig || {}).viewManager;
-
-    if (this.props.useWebKit) {
-      viewManager = viewManager || RNCWKWebViewManager;
-    } else {
-      viewManager = viewManager || RNCUIWebViewManager;
-    }
+    viewManager = viewManager || RNCWKWebViewManager;
     invariant(viewManager != null, 'viewManager expected to be non-null');
     viewManager.startLoadWithResult(!!shouldStart, lockIdentifier);
   };
@@ -474,7 +456,6 @@ class WebView extends React.Component<WebViewSharedProps, State> {
   }
 }
 
-const RNCUIWebView = requireNativeComponent('RNCUIWebView');
 const RNCWKWebView = requireNativeComponent('RNCWKWebView');
 
 const styles = StyleSheet.create({
